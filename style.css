@@ -19,6 +19,7 @@ body {
     background-color: var(--light-color);
     scroll-behavior: smooth;
     overflow-x: hidden;
+    user-select: none;
 }
 
 h1, h2, h3, h4 {
@@ -947,5 +948,6 @@ footer {
         max-width: 300px;
     }
 }
+
 
 /* Код был написан Иванишко Савелием! GitHub: Takameru */
