@@ -399,5 +399,27 @@ document.querySelectorAll('.btn, .count-btn').forEach(btn => {
     btn.addEventListener('click', playClickSound);
 });
 
+const modal = document.getElementById("myModal");
+const modalDate = document.getElementById("modal-date");
+const modalDesc = document.getElementById("modal-desc");
+const span = document.getElementsByClassName("close")[0];
 
-/* Код был написан Иванишко Савелием! GitHub: Takameru */
+document.querySelectorAll('.timeline-item').forEach(item => {
+    item.addEventListener('click', function() {
+        const date = this.querySelector('.timeline-date').textContent;
+        const desc = this.querySelector('p').textContent;
+        modalDate.textContent = date;
+        modalDesc.textContent = desc;
+        modal.style.display = "block";
+    });
+});
+
+span.addEventListener('click', function() {
+    modal.style.display = "none";
+});
+
+window.addEventListener('click', function(event) {
+    if (event.target == modal) {
+        modal.style.display = "none";
+    }
+});

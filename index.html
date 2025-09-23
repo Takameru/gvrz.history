@@ -22,6 +22,12 @@
     </nav>
 
     <section id="home" class="hero">
+        <div class="slideshow">
+            <div class="slide" style="background-image: url(img/Fon.jpg);"></div>
+            <div class="slide" style="background-image: url(img/pas.jpg);"></div>
+            <div class="slide" style="background-image: url(img/Cher.jpg);"></div>
+        </div>
+        <div class="hero-overlay"></div>
         <div class="hero-content">
             <h1 class="hero-title">Гомельский вагоноремонтный завод</h1>
             <p class="hero-subtitle">История становления и развития одного из старейших промышленных предприятий Беларуси</p>
@@ -373,11 +379,15 @@
         <source src="sounds/ready.mp3" type="audio/mpeg">
     </audio>
 
+    <!-- Modal for timeline details -->
+    <div id="myModal" class="modal">
+        <div class="modal-content">
+            <span class="close">&times;</span>
+            <h2 id="modal-date"></h2>
+            <p id="modal-desc"></p>
+        </div>
+    </div>
+
     <script src="script.js"></script>
 </body>
-
 </html>
-
-
-
-
