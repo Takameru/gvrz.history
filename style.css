@@ -93,6 +93,7 @@ p {
     text-align: center;
     color: var(--light-color);
     overflow: hidden;
+    background-color:rgba(47, 79, 79, 0.95) ;
 }
 
 .slideshow {
