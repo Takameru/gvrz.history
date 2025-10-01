@@ -455,7 +455,6 @@ footer {
     font-size: 1.5rem;
     margin-bottom: 1.5rem;
     color: var(--dark-color);
-    position: sticky;
     top: 0;
     background-color: rgba(255, 255, 255, 0.9);
     padding: 1rem;
@@ -1111,11 +1110,17 @@ footer {
     .hero-content {
         text-align: center;
     }
+    .composition-section {
+        padding: 1.5rem;
+    }
+    .palette-title {
+        font-size: 1.2rem;
+    }
 
 }
 
 
-@media screen and (max-width: 1300px) and (min-width:770px) {
+@media screen and (max-width: 1300px) and (min-width:769px) {
     .hero-title {
         font-size: 2.5rem;
     }
@@ -1137,10 +1142,10 @@ footer {
     
 }
 
+
 .perhistory {
     height: 100vh;
     width: 25vw;
 }
 
 /* Код был написан Иванишко Савелием! GitHub: Takameru */
-
