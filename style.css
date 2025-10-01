@@ -1125,9 +1125,22 @@ footer {
     
 }
 
+@media screen and (max-width: 917px) and (min-width:769px) {
+    .right {
+        display:none ;
+    }
+    .hero-content {
+        text-align: center;
+    }
+
+
+    
+}
+
 .perhistory {
     height: 100vh;
     width: 25vw;
 }
 
 /* Код был написан Иванишко Савелием! GitHub: Takameru */
+
