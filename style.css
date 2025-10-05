@@ -879,7 +879,7 @@ footer {
 .sound-btn {
     width: 40px;
     height: 40px;
-    border-radius: 50%;
+    border-radius: 35%;
     background-color: var(--accent-color);
     color: white;
     border: none;
@@ -1149,3 +1149,4 @@ footer {
 }
 
 /* Код был написан Иванишко Савелием! GitHub: Takameru */
+
