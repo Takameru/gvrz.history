@@ -309,7 +309,11 @@ p {
     border-radius: 50%;
     top: 15px;
     z-index: 1;
+
 }
+
+
+
 
 .timeline-item:nth-child(odd)::after {
     right: -13px;
@@ -907,6 +911,7 @@ footer {
     height: 100%;
     overflow: auto;
     background-color: rgba(0,0,0,0.4);
+    overflow-y: hidden;
 }
 
 .modal-content {
