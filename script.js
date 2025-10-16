@@ -423,3 +423,33 @@ window.addEventListener('click', function(event) {
         modal.style.display = "none";
     }
 });
+
+const MenuM = document.getElementsByClassName("m-container")[0]
+
+function myFunction() {
+    this.classList.toggle("change"); 
+}
+MenuM.addEventListener("click", myFunction);
+
+const modal1 = document.getElementById("myModal1");
+const span1= document.getElementsByClassName("close")[0];
+
+document.querySelectorAll('.m-container').forEach(item => {
+    item.addEventListener('click', function() {
+        modal1.style.display = "block";
+    });
+});
+
+window.addEventListener('click', function(event) {
+    if (event.target == modal1) {
+        modal1.style.display = "none";
+        MenuM.classList.remove("change")
+    }
+});
+
+document.querySelectorAll("#a-mod").forEach(item => {
+    item.addEventListener('click', function() {
+        modal1.style.display = "none";
+        MenuM.classList.remove("change")
+    });
+});
