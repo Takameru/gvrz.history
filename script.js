@@ -407,7 +407,7 @@ const span = document.getElementsByClassName("close")[0];
 document.querySelectorAll('.timeline-item').forEach(item => {
     item.addEventListener('click', function() {
         const date = this.querySelector('.timeline-date').textContent;
-        const desc = this.querySelector('p').textContent;
+        const desc = this.querySelector('span').textContent;
         modalDate.textContent = date;
         modalDesc.textContent = desc;
         modal.style.display = "block";
