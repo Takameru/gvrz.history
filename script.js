@@ -1,18 +1,14 @@
 document.querySelectorAll('.nav-link, .btn').forEach(link => {
-    // if (link.getAttribute('href') !== '#train-builder') {
-        link.addEventListener('click', function(e) {
-            e.preventDefault();
-            const targetId = this.getAttribute('href');
-            const targetElement = document.querySelector(targetId);
-            window.scrollTo({
-                top: targetElement.offsetTop - 70,
-                behavior: 'smooth'
-            });
+    link.addEventListener('click', function(e) {
+        e.preventDefault();
+        const targetId = this.getAttribute('href');
+        const targetElement = document.querySelector(targetId);
+        window.scrollTo({
+            top: targetElement.offsetTop - 70,
+            behavior: 'smooth'
         });
-    // }
+    });
 });
-
-/* Код был написан Иванишко Савелием! GitHub: Takameru */
 
 window.addEventListener('scroll', function() {
     const navbar = document.querySelector('.navbar');
@@ -65,17 +61,25 @@ const hoverSound = document.getElementById('hover-sound');
 const trainSound = document.getElementById('train-sound');
 const whistleSound = document.getElementById('whistle-sound');
 const successSound = document.getElementById('success-sound');
-
+const gameMusic = document.getElementById('game-music');
 
 let soundEnabled = true;
+let isMusicStarted = false;
+
 toggleSoundBtn.addEventListener('click', () => {
     soundEnabled = !soundEnabled;
     toggleSoundBtn.textContent = soundEnabled ? '🔊' : '🔇';
     
     if (!soundEnabled) {
         trainSound.pause();
-    } else if (document.querySelector('#train-builder').getBoundingClientRect().top < window.innerHeight) {
-        trainSound.play().catch(e => console.log("Автовоспроизведение заблокировано"));
+        gameMusic.pause();
+    } else {
+        if (document.querySelector('#train-builder').getBoundingClientRect().top < window.innerHeight) {
+            trainSound.play().catch(e => console.log("Автовоспроизведение заблокировано"));
+        }
+        if (gameState.isPlaying && isMusicStarted) {
+            gameMusic.play().catch(e => console.log("Автовоспроизведение музыки заблокировано"));
+        }
     }
 });
 
@@ -132,14 +136,30 @@ function saveTrainState() {
     sessionStorage.setItem('trainState', JSON.stringify(state));
 }
 
-/* Код был написан Иванишко Савелием! GitHub: Takameru */
-
 function loadTrainState() {
     const savedState = sessionStorage.getItem('trainState');
     if (savedState) {
         return JSON.parse(savedState);
     }
     return null;
+}
+
+function hasEnoughWagons() {
+    const locomotiveSlot = document.querySelector('.locomotive-slot');
+    const wagonSlots = document.querySelectorAll('.wagon-slot');
+    
+    if (!locomotiveSlot.classList.contains('filled')) {
+        return false;
+    }
+    
+    let filledWagonsCount = 0;
+    wagonSlots.forEach(slot => {
+        if (slot.classList.contains('filled')) {
+            filledWagonsCount++;
+        }
+    });
+    
+    return filledWagonsCount >= 3;
 }
 
 function initializeTrainSlots() {
@@ -256,11 +276,9 @@ function checkBuildButtonState() {
             allWagonsFilled = false;
         }
     });
+    
     buildTrainBtn.disabled = !(isLocomotiveFilled && allWagonsFilled);
 }
-
-
-/* Код был написан Иванишко Савелием! GitHub: Takameru */
 
 wagonOptions.forEach(option => {
     const imageDiv = option.querySelector('.wagon-image');
@@ -287,7 +305,6 @@ addWagonBtn.addEventListener('click', () => {
         wagonCountDisplay.textContent = `Количество вагонов: ${wagonCount}`;
         gameState.maxLevel = wagonCount;
         initializeTrainSlots();
-
     } else {
         alert('Максимальное количество вагонов: 12');
     }
@@ -301,15 +318,28 @@ removeWagonBtn.addEventListener('click', () => {
         wagonCountDisplay.textContent = `Количество вагонов: ${wagonCount}`;
         gameState.maxLevel = wagonCount;
         initializeTrainSlots();
-
     } else {
         alert('Минимальное количество вагонов: 3');
     }
 });
 
-
-
-/* Код был написан Иванишко Савелием! GitHub: Takameru */
+buildTrainBtn.addEventListener('click', function() {
+    if (!hasEnoughWagons()) {
+        alert('Недостаточно вагонов! Для сборки поезда необходимо заполнить все слоты вагонов.');
+        return;
+    }
+    
+    const gameCompleted = sessionStorage.getItem('gameCompleted');
+    const trainState = sessionStorage.getItem('trainState');
+    
+    if (gameCompleted === 'true' && trainState) {
+        showTrainResult();
+    } else {
+        gameModal.style.display = "block";
+        resetGameState();
+        initGame();
+    }
+});
 
 resetTrainBtn.addEventListener('click', () => {
     playClickSound();
@@ -317,22 +347,19 @@ resetTrainBtn.addEventListener('click', () => {
     wagonCountDisplay.textContent = `Количество вагонов: ${wagonCount}`;
     
     sessionStorage.removeItem('trainState');
+    sessionStorage.removeItem('gameCompleted');
+    
+    gameState.maxLevel = wagonCount;
+    
+    resetGameState();
     
     initializeTrainSlots();
-
-    resetGame()
-    level = 1;
-
-    gameState.maxLevel = wagonCount;
     
     trainNameInput.value = '';
     trainResult.style.display = 'none';
     selectedWagonType = null;
-
-    wagonCountFor = wagonCount;
     
     wagonOptions.forEach(opt => opt.classList.remove('selected'));
-    resetGameState();
 });
 
 function handleScroll() {
@@ -345,6 +372,7 @@ function handleScroll() {
         trainSound.pause();
     }
 }
+
 initializeTrainSlots();
 
 window.addEventListener('scroll', handleScroll);
@@ -388,7 +416,6 @@ function myFunction() {
 MenuM.addEventListener("click", myFunction);
 
 const modal1 = document.getElementById("myModal1");
-const span1= document.getElementsByClassName("close")[0];
 
 document.querySelectorAll('.m-container').forEach(item => {
     item.addEventListener('click', function() {
@@ -415,8 +442,6 @@ document.querySelectorAll("#a-mod").forEach(item => {
 const gameModal = document.getElementById("game-modal");
 const closeGameBtn = document.querySelector(".close-game");
 
-
-
 let gameState = {
     level: 1,
     maxLevel: 5,
@@ -431,7 +456,6 @@ let gameState = {
     connections: [],
     icons: ['⚡', '🔌', '💡', '🔋', '📡', '🛰️', '🔦', '💎', '⭐', '🔆']
 };
-
 
 const leftColumn = document.getElementById('left-column-shitok');
 const rightColumn = document.getElementById('right-column-shitok');
@@ -449,57 +473,72 @@ const nextLevelBtn = document.getElementById('next-level-shitok');
 const retryBtn = document.getElementById('retry-shitok');
 const restartBtn = document.getElementById('restart-shitok');
 
-
-buildTrainBtn.addEventListener('click', function() {
-    playClickSound();
-    const gameCompleted = sessionStorage.getItem('gameCompleted');
-    
-    if (gameCompleted === 'true') {
-        showTrainResult();
-    } else {
-        gameModal.style.display = "block";
-        initGame();
-    }
-});
-
-
 closeGameBtn.addEventListener('click', function() {
     playClickSound();
     gameModal.style.display = "none";
-
     if (gameState.timer) {
         clearInterval(gameState.timer);
     }
     gameState.isPlaying = false;
+    gameMusic.pause();
+    isMusicStarted = false;
 });
-
 
 window.addEventListener('click', function(event) {
     if (event.target == gameModal) {
         gameModal.style.display = "none";
-
         if (gameState.timer) {
             clearInterval(gameState.timer);
         }
         gameState.isPlaying = false;
+        gameMusic.pause();
+        isMusicStarted = false;
     }
 });
 
+function resetGameState() {
+    if (gameState.timer) {
+        clearInterval(gameState.timer);
+    }
+    
+    gameState = {
+        level: 1,
+        maxLevel: wagonCount,
+        connectedWires: 0,
+        totalWires: 4,
+        timeLeft: 30,
+        timer: null,
+        isPlaying: false,
+        colors: ['#8B0000', '#DAA520', '#2F4F4F', '#4a6741', '#6a5acd', '#8B4513'],
+        currentColors: [],
+        selectedWire: null,
+        connections: [],
+        icons: ['⚡', '🔌', '💡', '🔋', '📡', '🛰️', '🔦', '💎', '⭐', '🔆']
+    };
+    
+    hideGameMessages();
+}
+
+function hideGameMessages() {
+    const winMessage = document.getElementById('win-message-shitok');
+    const loseMessage = document.getElementById('lose-message-shitok');
+    const completeMessage = document.getElementById('complete-message-shitok');
+    
+    if (winMessage) winMessage.style.display = 'none';
+    if (loseMessage) loseMessage.style.display = 'none';
+    if (completeMessage) completeMessage.style.display = 'none';
+}
 
 function initGame() {
-
     canvas.width = canvas.offsetWidth;
     canvas.height = canvas.offsetHeight;
     
-
     leftColumn.innerHTML = '';
     rightColumn.innerHTML = '';
     
-
     gameState.totalWires = 4 + Math.floor(gameState.level / 2);
     if (gameState.totalWires > 6) gameState.totalWires = 6;
     
-
     gameState.currentColors = [];
     const availableColors = [...gameState.colors];
     for (let i = 0; i < gameState.totalWires; i++) {
@@ -508,7 +547,6 @@ function initGame() {
         availableColors.splice(randomIndex, 1);
     }
     
-
     const availableIcons = [...gameState.icons];
     const selectedIcons = [];
     for (let i = 0; i < gameState.totalWires; i++) {
@@ -517,7 +555,6 @@ function initGame() {
         availableIcons.splice(randomIndex, 1);
     }
     
-
     gameState.currentColors.forEach((color, index) => {
         const wire = document.createElement('div');
         wire.className = 'wire-end-shitok';
@@ -532,7 +569,6 @@ function initGame() {
         icon.textContent = selectedIcons[index];
         wire.appendChild(icon);
         
-
         const textColor = getContrastColor(color);
         wire.style.color = textColor;
         
@@ -540,7 +576,6 @@ function initGame() {
         leftColumn.appendChild(wire);
     });
     
-
     const shuffledIcons = [...selectedIcons].sort(() => Math.random() - 0.5);
     
     gameState.currentColors.forEach((color, index) => {
@@ -557,14 +592,13 @@ function initGame() {
         icon.textContent = shuffledIcons[index];
         wire.appendChild(icon);
         
-  
         const textColor = getContrastColor(color);
         wire.style.color = textColor;
         
         wire.addEventListener('click', handleWireClick);
         rightColumn.appendChild(wire);
     });
-
+    
     gameState.connectedWires = 0;
     gameState.selectedWire = null;
     gameState.connections = [];
@@ -572,9 +606,7 @@ function initGame() {
     clearCanvas();
 }
 
-
 function getContrastColor(hexColor) {
-
     const r = parseInt(hexColor.substr(1, 2), 16);
     const g = parseInt(hexColor.substr(3, 2), 16);
     const b = parseInt(hexColor.substr(5, 2), 16);
@@ -593,8 +625,8 @@ function handleWireClick(event) {
     const side = wire.dataset.side;
     const icon = wire.dataset.icon;
     
-
     if (wire.classList.contains('connected-shitok')) return;
+    
     if (!gameState.selectedWire) {
         gameState.selectedWire = { element: wire, color, side, icon };
         wire.classList.add('selected-shitok');
@@ -629,6 +661,7 @@ function connectWires(leftWire, rightWire) {
     const startY = leftRect.top + leftRect.height / 2 - canvasRect.top;
     const endX = rightRect.left + rightRect.width / 2 - canvasRect.left;
     const endY = rightRect.top + rightRect.height / 2 - canvasRect.top;
+    
     gameState.connections.push({
         startX, startY, endX, endY, color: leftWire.dataset.color
     });
@@ -678,6 +711,12 @@ function startGame() {
     
     updateDisplay();
     
+    if (soundEnabled && !isMusicStarted) {
+        gameMusic.currentTime = 0;
+        gameMusic.play().catch(e => console.log("Автовоспроизведение музыки заблокировано"));
+        isMusicStarted = true;
+    }
+    
     gameState.timer = setInterval(() => {
         gameState.timeLeft--;
         timerDisplay.textContent = gameState.timeLeft;
@@ -690,7 +729,6 @@ function startGame() {
 
 function resetGame() {
     playClickSound();
-
     clearInterval(gameState.timer);
     gameState.isPlaying = false;
     startBtn.disabled = false;
@@ -705,10 +743,13 @@ function winGame() {
     
     if (gameState.level === gameState.maxLevel) {
         completeMessage.style.display = 'block';
+        gameMusic.pause();
+        isMusicStarted = false;
     } else {
         winMessage.style.display = 'block';
     }
 }
+
 function endGame(isWin) {
     clearInterval(gameState.timer);
     gameState.isPlaying = false;
@@ -716,6 +757,8 @@ function endGame(isWin) {
     
     if (!isWin) {
         loseMessage.style.display = 'block';
+        gameMusic.pause();
+        isMusicStarted = false;
     }
 }
 
@@ -724,6 +767,7 @@ function hideMessages() {
     loseMessage.style.display = 'none';
     completeMessage.style.display = 'none';
 }
+
 function nextLevel() {
     gameState.level++;
     hideMessages();
@@ -800,6 +844,9 @@ restartBtn.addEventListener('click', () => {
     playClickSound();
     sessionStorage.setItem('gameCompleted', 'true');
     gameModal.style.display = 'none';
+    gameMusic.pause();
+    isMusicStarted = false;
+    resetGameState();
     showTrainResult();
 });
 
@@ -813,10 +860,6 @@ window.addEventListener('load', () => {
             drawConnections();
         }
     });
-});
-
-resetTrainBtn.addEventListener('click', () => {
-    sessionStorage.removeItem('gameCompleted');
 });
 
 document.querySelectorAll('#start-btn-shitok,#reset-btn-shitok,.wire-end-shitok').forEach(btn => {
