@@ -66,8 +66,8 @@ const trainSound = document.getElementById('train-sound');
 const whistleSound = document.getElementById('whistle-sound');
 const successSound = document.getElementById('success-sound');
 
-let soundEnabled = true;
 
+let soundEnabled = true;
 toggleSoundBtn.addEventListener('click', () => {
     soundEnabled = !soundEnabled;
     toggleSoundBtn.textContent = soundEnabled ? '🔊' : '🔇';
@@ -256,9 +256,9 @@ function checkBuildButtonState() {
             allWagonsFilled = false;
         }
     });
-    
     buildTrainBtn.disabled = !(isLocomotiveFilled && allWagonsFilled);
 }
+
 
 /* Код был написан Иванишко Савелием! GitHub: Takameru */
 
@@ -283,10 +283,11 @@ addWagonBtn.addEventListener('click', () => {
     playClickSound();
     if (wagonCount < 12) {
         saveTrainState();
-        
         wagonCount++;
         wagonCountDisplay.textContent = `Количество вагонов: ${wagonCount}`;
+        gameState.maxLevel = wagonCount;
         initializeTrainSlots();
+
     } else {
         alert('Максимальное количество вагонов: 12');
     }
@@ -296,16 +297,441 @@ removeWagonBtn.addEventListener('click', () => {
     playClickSound();
     if (wagonCount > 3) {
         saveTrainState();
-        
         wagonCount--;
         wagonCountDisplay.textContent = `Количество вагонов: ${wagonCount}`;
+        gameState.maxLevel = wagonCount;
         initializeTrainSlots();
+
     } else {
         alert('Минимальное количество вагонов: 3');
     }
 });
 
-buildTrainBtn.addEventListener('click', () => {
+
+
+/* Код был написан Иванишко Савелием! GitHub: Takameru */
+
+resetTrainBtn.addEventListener('click', () => {
+    playClickSound();
+    wagonCount = 5;
+    wagonCountDisplay.textContent = `Количество вагонов: ${wagonCount}`;
+    
+    sessionStorage.removeItem('trainState');
+    
+    initializeTrainSlots();
+
+    resetGame()
+    level = 1;
+
+    gameState.maxLevel = wagonCount;
+    
+    trainNameInput.value = '';
+    trainResult.style.display = 'none';
+    selectedWagonType = null;
+
+    wagonCountFor = wagonCount;
+    
+    wagonOptions.forEach(opt => opt.classList.remove('selected'));
+    resetGameState();
+});
+
+function handleScroll() {
+    const trainBuilderSection = document.getElementById('train-builder');
+    const rect = trainBuilderSection.getBoundingClientRect();
+    
+    if (rect.top < window.innerHeight && rect.bottom > 0 && soundEnabled) {
+        trainSound.play().catch(e => console.log("Автовоспроизведение заблокировано"));
+    } else {
+        trainSound.pause();
+    }
+}
+initializeTrainSlots();
+
+window.addEventListener('scroll', handleScroll);
+
+document.querySelectorAll('.btn, .count-btn').forEach(btn => {
+    addHoverSound(btn);
+    btn.addEventListener('click', playClickSound);
+});
+
+const modal = document.getElementById("myModal");
+const modalDate = document.getElementById("modal-date");
+const modalDesc = document.getElementById("modal-desc");
+const span = document.getElementsByClassName("close")[0];
+
+document.querySelectorAll('.timeline-item').forEach(item => {
+    item.addEventListener('click', function() {
+        const date = this.querySelector('.timeline-date').textContent;
+        const desc = this.querySelector('span').textContent;
+        modalDate.textContent = date;
+        modalDesc.textContent = desc;
+        modal.style.display = "block";
+    });
+});
+
+span.addEventListener('click', function() {
+    playClickSound();
+    modal.style.display = "none";
+});
+
+window.addEventListener('click', function(event) {
+    if (event.target == modal) {
+        modal.style.display = "none";
+    }
+});
+
+const MenuM = document.getElementsByClassName("m-container")[0]
+
+function myFunction() {
+    this.classList.toggle("change"); 
+}
+MenuM.addEventListener("click", myFunction);
+
+const modal1 = document.getElementById("myModal1");
+const span1= document.getElementsByClassName("close")[0];
+
+document.querySelectorAll('.m-container').forEach(item => {
+    item.addEventListener('click', function() {
+        playClickSound();
+        modal1.style.display = "block";
+    });
+});
+
+window.addEventListener('click', function(event) {
+    if (event.target == modal1) {
+        modal1.style.display = "none";
+        MenuM.classList.remove("change")
+    }
+});
+
+document.querySelectorAll("#a-mod").forEach(item => {
+    item.addEventListener('click', function() {
+        playClickSound();
+        modal1.style.display = "none";
+        MenuM.classList.remove("change")
+    });
+});
+
+const gameModal = document.getElementById("game-modal");
+const closeGameBtn = document.querySelector(".close-game");
+
+
+
+let gameState = {
+    level: 1,
+    maxLevel: 5,
+    connectedWires: 0,
+    totalWires: 4,
+    timeLeft: 30,
+    timer: null,
+    isPlaying: false,
+    colors: ['#8B0000', '#DAA520', '#2F4F4F', '#4a6741', '#6a5acd', '#8B4513'],
+    currentColors: [],
+    selectedWire: null,
+    connections: [],
+    icons: ['⚡', '🔌', '💡', '🔋', '📡', '🛰️', '🔦', '💎', '⭐', '🔆']
+};
+
+
+const leftColumn = document.getElementById('left-column-shitok');
+const rightColumn = document.getElementById('right-column-shitok');
+const canvas = document.getElementById('drawing-area-shitok');
+const ctx = canvas.getContext('2d');
+const levelDisplay = document.getElementById('level-shitok');
+const connectedDisplay = document.getElementById('connected-shitok');
+const timerDisplay = document.getElementById('timer-shitok');
+const startBtn = document.getElementById('start-btn-shitok');
+const resetBtn = document.getElementById('reset-btn-shitok');
+const winMessage = document.getElementById('win-message-shitok');
+const loseMessage = document.getElementById('lose-message-shitok');
+const completeMessage = document.getElementById('complete-message-shitok');
+const nextLevelBtn = document.getElementById('next-level-shitok');
+const retryBtn = document.getElementById('retry-shitok');
+const restartBtn = document.getElementById('restart-shitok');
+
+
+buildTrainBtn.addEventListener('click', function() {
+    playClickSound();
+    const gameCompleted = sessionStorage.getItem('gameCompleted');
+    
+    if (gameCompleted === 'true') {
+        showTrainResult();
+    } else {
+        gameModal.style.display = "block";
+        initGame();
+    }
+});
+
+
+closeGameBtn.addEventListener('click', function() {
+    playClickSound();
+    gameModal.style.display = "none";
+
+    if (gameState.timer) {
+        clearInterval(gameState.timer);
+    }
+    gameState.isPlaying = false;
+});
+
+
+window.addEventListener('click', function(event) {
+    if (event.target == gameModal) {
+        gameModal.style.display = "none";
+
+        if (gameState.timer) {
+            clearInterval(gameState.timer);
+        }
+        gameState.isPlaying = false;
+    }
+});
+
+
+function initGame() {
+
+    canvas.width = canvas.offsetWidth;
+    canvas.height = canvas.offsetHeight;
+    
+
+    leftColumn.innerHTML = '';
+    rightColumn.innerHTML = '';
+    
+
+    gameState.totalWires = 4 + Math.floor(gameState.level / 2);
+    if (gameState.totalWires > 6) gameState.totalWires = 6;
+    
+
+    gameState.currentColors = [];
+    const availableColors = [...gameState.colors];
+    for (let i = 0; i < gameState.totalWires; i++) {
+        const randomIndex = Math.floor(Math.random() * availableColors.length);
+        gameState.currentColors.push(availableColors[randomIndex]);
+        availableColors.splice(randomIndex, 1);
+    }
+    
+
+    const availableIcons = [...gameState.icons];
+    const selectedIcons = [];
+    for (let i = 0; i < gameState.totalWires; i++) {
+        const randomIndex = Math.floor(Math.random() * availableIcons.length);
+        selectedIcons.push(availableIcons[randomIndex]);
+        availableIcons.splice(randomIndex, 1);
+    }
+    
+
+    gameState.currentColors.forEach((color, index) => {
+        const wire = document.createElement('div');
+        wire.className = 'wire-end-shitok';
+        wire.style.backgroundColor = color;
+        wire.dataset.color = color;
+        wire.dataset.side = 'left';
+        wire.dataset.index = index;
+        wire.dataset.icon = selectedIcons[index];
+        
+        const icon = document.createElement('span');
+        icon.className = 'wire-icon-shitok';
+        icon.textContent = selectedIcons[index];
+        wire.appendChild(icon);
+        
+
+        const textColor = getContrastColor(color);
+        wire.style.color = textColor;
+        
+        wire.addEventListener('click', handleWireClick);
+        leftColumn.appendChild(wire);
+    });
+    
+
+    const shuffledIcons = [...selectedIcons].sort(() => Math.random() - 0.5);
+    
+    gameState.currentColors.forEach((color, index) => {
+        const wire = document.createElement('div');
+        wire.className = 'wire-end-shitok';
+        wire.style.backgroundColor = color;
+        wire.dataset.color = color;
+        wire.dataset.side = 'right';
+        wire.dataset.index = index;
+        wire.dataset.icon = shuffledIcons[index];
+        
+        const icon = document.createElement('span');
+        icon.className = 'wire-icon-shitok';
+        icon.textContent = shuffledIcons[index];
+        wire.appendChild(icon);
+        
+  
+        const textColor = getContrastColor(color);
+        wire.style.color = textColor;
+        
+        wire.addEventListener('click', handleWireClick);
+        rightColumn.appendChild(wire);
+    });
+
+    gameState.connectedWires = 0;
+    gameState.selectedWire = null;
+    gameState.connections = [];
+    updateDisplay();
+    clearCanvas();
+}
+
+
+function getContrastColor(hexColor) {
+
+    const r = parseInt(hexColor.substr(1, 2), 16);
+    const g = parseInt(hexColor.substr(3, 2), 16);
+    const b = parseInt(hexColor.substr(5, 2), 16);
+    
+    const brightness = (r * 299 + g * 587 + b * 114) / 1000;
+    
+    return brightness > 128 ? '#333' : '#F5F5F5';
+}
+
+function handleWireClick(event) {
+    playClickSound();
+    if (!gameState.isPlaying) return;
+    
+    const wire = event.currentTarget;
+    const color = wire.dataset.color;
+    const side = wire.dataset.side;
+    const icon = wire.dataset.icon;
+    
+
+    if (wire.classList.contains('connected-shitok')) return;
+    if (!gameState.selectedWire) {
+        gameState.selectedWire = { element: wire, color, side, icon };
+        wire.classList.add('selected-shitok');
+    } 
+    else if (
+        gameState.selectedWire.side !== side && 
+        gameState.selectedWire.icon === icon
+    ) {
+        connectWires(gameState.selectedWire.element, wire);
+        gameState.selectedWire.element.classList.remove('selected-shitok');
+        gameState.selectedWire = null;
+        
+        if (gameState.connectedWires === gameState.totalWires) {
+            winGame();
+        }
+    } 
+    else if (gameState.selectedWire.side !== side) {
+        gameState.selectedWire.element.classList.remove('selected-shitok');
+        gameState.selectedWire = null;
+    }
+}
+
+function connectWires(leftWire, rightWire) {
+    leftWire.classList.add('connected-shitok');
+    rightWire.classList.add('connected-shitok');
+    
+    const leftRect = leftWire.getBoundingClientRect();
+    const rightRect = rightWire.getBoundingClientRect();
+    const canvasRect = canvas.getBoundingClientRect();
+    
+    const startX = leftRect.left + leftRect.width / 2 - canvasRect.left;
+    const startY = leftRect.top + leftRect.height / 2 - canvasRect.top;
+    const endX = rightRect.left + rightRect.width / 2 - canvasRect.left;
+    const endY = rightRect.top + rightRect.height / 2 - canvasRect.top;
+    gameState.connections.push({
+        startX, startY, endX, endY, color: leftWire.dataset.color
+    });
+    
+    gameState.connectedWires++;
+    updateDisplay();
+    
+    drawConnections();
+}
+
+function drawConnections() {
+    clearCanvas();
+    
+    gameState.connections.forEach(conn => {
+        ctx.beginPath();
+        ctx.moveTo(conn.startX, conn.startY);
+        ctx.lineTo(conn.endX, conn.endY);
+        ctx.strokeStyle = conn.color;
+        ctx.lineWidth = 3;
+        ctx.stroke();
+        
+        ctx.shadowColor = conn.color;
+        ctx.shadowBlur = 10;
+        ctx.stroke();
+        ctx.shadowBlur = 0;
+    });
+}
+
+function clearCanvas() {
+    ctx.clearRect(0, 0, canvas.width, canvas.height);
+}
+
+function updateDisplay() {
+    levelDisplay.textContent = `${gameState.level} / ${gameState.maxLevel}`;
+    connectedDisplay.textContent = `${gameState.connectedWires} / ${gameState.totalWires}`;
+    timerDisplay.textContent = gameState.timeLeft;
+}
+
+function startGame() {
+    playClickSound();
+    if (gameState.isPlaying) return;
+    
+    gameState.isPlaying = true;
+    startBtn.disabled = true;
+    gameState.timeLeft = 30 - (gameState.level - 1) * 2;
+    if (gameState.timeLeft < 15) gameState.timeLeft = 15;
+    
+    updateDisplay();
+    
+    gameState.timer = setInterval(() => {
+        gameState.timeLeft--;
+        timerDisplay.textContent = gameState.timeLeft;
+        
+        if (gameState.timeLeft <= 0) {
+            endGame(false);
+        }
+    }, 1000);
+}
+
+function resetGame() {
+    playClickSound();
+
+    clearInterval(gameState.timer);
+    gameState.isPlaying = false;
+    startBtn.disabled = false;
+    initGame();
+    hideMessages();
+}
+
+function winGame() {
+    clearInterval(gameState.timer);
+    gameState.isPlaying = false;
+    startBtn.disabled = false;
+    
+    if (gameState.level === gameState.maxLevel) {
+        completeMessage.style.display = 'block';
+    } else {
+        winMessage.style.display = 'block';
+    }
+}
+function endGame(isWin) {
+    clearInterval(gameState.timer);
+    gameState.isPlaying = false;
+    startBtn.disabled = false;
+    
+    if (!isWin) {
+        loseMessage.style.display = 'block';
+    }
+}
+
+function hideMessages() {
+    winMessage.style.display = 'none';
+    loseMessage.style.display = 'none';
+    completeMessage.style.display = 'none';
+}
+function nextLevel() {
+    gameState.level++;
+    hideMessages();
+    initGame();
+    startGame();
+}
+
+function showTrainResult() {
     const name = trainNameInput.value.trim();
     if (!name) {
         alert('Пожалуйста, дайте имя вашему поезду!');
@@ -357,99 +783,43 @@ buildTrainBtn.addEventListener('click', () => {
     trainResult.style.display = 'block';
     
     setTimeout(() => {
-        trainResult.scrollIntoView({ behavior: 'smooth' });
+        buildTrainBtn.scrollIntoView({ behavior: 'smooth' });
     }, 500);
+}
+
+startBtn.addEventListener('click', startGame);
+resetBtn.addEventListener('click', resetGame);
+nextLevelBtn.addEventListener('click', nextLevel);
+retryBtn.addEventListener('click', () => {
+    playClickSound();
+    hideMessages();
+    initGame();
+    startGame();
+});
+restartBtn.addEventListener('click', () => {
+    playClickSound();
+    sessionStorage.setItem('gameCompleted', 'true');
+    gameModal.style.display = 'none';
+    showTrainResult();
 });
 
-
-/* Код был написан Иванишко Савелием! GitHub: Takameru */
-
-resetTrainBtn.addEventListener('click', () => {
-    playClickSound();
-    wagonCount = 5;
-    wagonCountDisplay.textContent = `Количество вагонов: ${wagonCount}`;
-    
-    sessionStorage.removeItem('trainState');
-    
+window.addEventListener('load', () => {
     initializeTrainSlots();
     
-    trainNameInput.value = '';
-    trainResult.style.display = 'none';
-    selectedWagonType = null;
-    
-    wagonOptions.forEach(opt => opt.classList.remove('selected'));
+    window.addEventListener('resize', () => {
+        if (canvas) {
+            canvas.width = canvas.offsetWidth;
+            canvas.height = canvas.offsetHeight;
+            drawConnections();
+        }
+    });
 });
 
-function handleScroll() {
-    const trainBuilderSection = document.getElementById('train-builder');
-    const rect = trainBuilderSection.getBoundingClientRect();
-    
-    if (rect.top < window.innerHeight && rect.bottom > 0 && soundEnabled) {
-        trainSound.play().catch(e => console.log("Автовоспроизведение заблокировано"));
-    } else {
-        trainSound.pause();
-    }
-}
-initializeTrainSlots();
+resetTrainBtn.addEventListener('click', () => {
+    sessionStorage.removeItem('gameCompleted');
+});
 
-window.addEventListener('scroll', handleScroll);
-
-document.querySelectorAll('.btn, .count-btn').forEach(btn => {
+document.querySelectorAll('#start-btn-shitok,#reset-btn-shitok,.wire-end-shitok').forEach(btn => {
     addHoverSound(btn);
     btn.addEventListener('click', playClickSound);
-});
-
-const modal = document.getElementById("myModal");
-const modalDate = document.getElementById("modal-date");
-const modalDesc = document.getElementById("modal-desc");
-const span = document.getElementsByClassName("close")[0];
-
-document.querySelectorAll('.timeline-item').forEach(item => {
-    item.addEventListener('click', function() {
-        const date = this.querySelector('.timeline-date').textContent;
-        const desc = this.querySelector('span').textContent;
-        modalDate.textContent = date;
-        modalDesc.textContent = desc;
-        modal.style.display = "block";
-    });
-});
-
-span.addEventListener('click', function() {
-    modal.style.display = "none";
-});
-
-window.addEventListener('click', function(event) {
-    if (event.target == modal) {
-        modal.style.display = "none";
-    }
-});
-
-const MenuM = document.getElementsByClassName("m-container")[0]
-
-function myFunction() {
-    this.classList.toggle("change"); 
-}
-MenuM.addEventListener("click", myFunction);
-
-const modal1 = document.getElementById("myModal1");
-const span1= document.getElementsByClassName("close")[0];
-
-document.querySelectorAll('.m-container').forEach(item => {
-    item.addEventListener('click', function() {
-        modal1.style.display = "block";
-    });
-});
-
-window.addEventListener('click', function(event) {
-    if (event.target == modal1) {
-        modal1.style.display = "none";
-        MenuM.classList.remove("change")
-    }
-});
-
-document.querySelectorAll("#a-mod").forEach(item => {
-    item.addEventListener('click', function() {
-        modal1.style.display = "none";
-        MenuM.classList.remove("change")
-    });
 });

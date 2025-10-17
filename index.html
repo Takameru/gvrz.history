@@ -448,6 +448,68 @@
         <source src="sounds/ready.mp3" type="audio/mpeg">
     </audio>
 
+
+    <div id="game-modal" class="modal-game">
+        <div class="modal-game-content">
+            <span class="close-game">&times;</span>
+            <section class="game-section-shitok">
+                <div class="game-header-shitok">
+                    <h1>Электрический щит</h1>
+                    <p>Соедини провода с одинаковыми значками до истечения времени Чтобы запустить состав</p>
+                </div>
+
+                <div class="game-info-shitok">
+                    <div class="info-item-shitok">
+                        <h3>Вагоны</h3>
+                        <p id="level-shitok">1 / 10</p>
+                    </div>
+                    <div class="info-item-shitok">
+                        <h3>Соединено</h3>
+                        <p id="connected-shitok">0 / 4</p>
+                    </div>
+                    <div class="info-item-shitok">
+                        <h3>Время</h3>
+                        <p id="timer-shitok">30</p>
+                    </div>
+                </div>
+
+                <div class="game-container-shitok">
+                    <div class="wires-container-shitok">
+                        <div class="wire-column-shitok" id="left-column-shitok">
+                        </div>
+                        <div class="wire-column-shitok" id="right-column-shitok">
+                        </div>
+                    </div>
+                    <canvas id="drawing-area-shitok"></canvas>
+                </div>
+
+                <div class="game-controls-shitok">
+                    <button id="start-btn-shitok">Начать</button>
+                    <button id="reset-btn-shitok">Перезапуск</button>
+                </div>
+            </section>
+
+            <div class="message-shitok" id="win-message-shitok">
+                <h2>СОЕДИНЕНИЕ УСТАНОВЛЕНО</h2>
+                <p>Вагон присоединен успешно!</p>
+                <button id="next-level-shitok">Следующий вагон</button>
+            </div>
+
+            <div class="message-shitok" id="lose-message-shitok">
+                <h2>СИСТЕМНЫЙ СБОЙ</h2>
+                <p>Время истекло! Система перезагружается.</p>
+                <button id="retry-shitok">Повторить</button>
+            </div>
+
+            <div class="message-shitok" id="complete-message-shitok">
+                <h2>МИССИЯ ВЫПОЛНЕНА</h2>
+                <p>Вы успешно активировали все системы!</p>
+                <button id="restart-shitok">Начать сборку поезда</button>
+            </div>
+        </div>
+    </div>
+
+
     <div id="myModal" class="modal">
         <div class="modal-content">
             <span class="close">&times;</span>
@@ -466,6 +528,8 @@
             </ul>
         </div>
     </div>
+
+
 
     <script src="script.js"></script>
 </body>
