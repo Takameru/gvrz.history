@@ -927,7 +927,7 @@ footer {
 
 .modal-content {
     background-color: #fefefe;
-    margin: 15% auto;
+    margin: 13% auto;
     padding: 20px;
     border: 1px solid var(--gray-text);
     width: 80%;
@@ -1645,3 +1645,4 @@ footer {
         scale: 1;
     }
 }
+
