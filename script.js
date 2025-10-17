@@ -701,6 +701,11 @@ function updateDisplay() {
 }
 
 function startGame() {
+    const BCH = document.querySelectorAll("#game-container-shitok")
+
+    for (const element of BCH) {
+        element.style.filter = "grayscale(0)";
+    }
     playClickSound();
     if (gameState.isPlaying) return;
     
@@ -865,4 +870,5 @@ window.addEventListener('load', () => {
 document.querySelectorAll('#start-btn-shitok,#reset-btn-shitok,.wire-end-shitok').forEach(btn => {
     addHoverSound(btn);
     btn.addEventListener('click', playClickSound);
+
 });
