@@ -1312,6 +1312,12 @@ footer {
     z-index: 2;
 }
 
+#game-container-shitok {
+
+    filter: grayscale(1);
+
+}
+
 .wires-container-shitok {
     display: flex;
     justify-content: space-between;
@@ -1645,4 +1651,5 @@ footer {
         scale: 1;
     }
 }
+
 
