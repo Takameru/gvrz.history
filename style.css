@@ -1213,6 +1213,10 @@ footer {
 
 .modal-game-content {
     background-color: var(--dark-bg);
+    background-position: center;
+    background-size: cover;
+    background-repeat: no-repeat;
+    background-image: url(img/phon-shitok.png);
     margin: 2% auto;
     padding: 20px;
     width: 90%;
@@ -1269,8 +1273,8 @@ footer {
 .game-header-shitok {
     text-align: center;
     margin-bottom: 20px;
-    padding-bottom: 15px;
-    border-bottom: 1px solid var(--dark-border);
+    padding-bottom: 10px;
+    border-bottom: 2px solid var(--dark-border);
     position: relative;
     z-index: 2;
 }
@@ -1286,9 +1290,10 @@ footer {
 .game-info-shitok {
     display: flex;
     justify-content: space-around;
-    margin-bottom: 10px;
+    margin-bottom: 8px;
     padding: 10px;
-    background-color: var(--dark-color);
+    border: 2px solid var(--dark-bg);
+    background-color: rgba(0, 0, 0, 0.541);
     position: relative;
     z-index: 2;
 }
@@ -1308,10 +1313,8 @@ footer {
     width: 100%;
     height: 400px;
     background-color: var(--darker-bg);
-    border: 1px solid var(--dark-border);
     overflow: hidden;
     margin-bottom: 20px;
-    box-shadow: inset 0 0 20px rgba(0, 0, 0, 0.5);
     position: relative;
     z-index: 2;
 }
@@ -1338,6 +1341,7 @@ footer {
 }
 
 .wire-end-shitok {
+    
     width: 50px;
     height: 50px;
     border-radius: 2px;
@@ -1350,8 +1354,8 @@ footer {
     font-weight: bold;
     z-index: 10;
     position: relative;
-    box-shadow: 0 2px 5px rgba(0, 0, 0, 0.3);
     background: linear-gradient(145deg, #3a3a3a, var(--dark-medium));
+    
 }
 
 .wire-end-shitok::before {
@@ -1361,8 +1365,8 @@ footer {
     left: 2px;
     right: 2px;
     bottom: 2px;
-    border: 1px solid rgba(255, 255, 255, 0.1);
     border-radius: 1px;
+    
 }
 
 .wire-end-shitok:hover {
@@ -1395,6 +1399,8 @@ footer {
     background-repeat: no-repeat;
 }
 
+
+
 .game-controls-shitok {
     display: flex;
     gap: 10px;
@@ -1406,7 +1412,6 @@ footer {
 .game-controls-shitok button {
     background: var(--primary-color);
     color: var(--white);
-    border: none;
     padding: 10px 20px;
     font-size: 0.9rem;
     cursor: pointer;
@@ -1430,7 +1435,6 @@ footer {
     text-align: center;
     z-index: 100;
     display: none;
-    box-shadow: 0 0 30px rgba(0, 0, 0, 0.7);
 }
 
 .message-shitok h2 {
@@ -1456,6 +1460,7 @@ footer {
     position: relative;
     color: var(--light-color);
     max-height: 93vh;
+    border: 2px solid var(--dark-bg);
 }
 
 .close-game {
@@ -1480,8 +1485,8 @@ footer {
     width: 100%;
     margin: 0 auto;
     padding: 14px;
-    background-color: var(--dark-medium);
-    border: 2px solid var(--dark-border);
+    background: rgba(0, 0, 0, 0.001);
+    border:none;
     position: static;
     overflow: hidden;
     height: 87vh;
@@ -1498,6 +1503,7 @@ footer {
     background-color: rgba(0, 0, 0, 0.185);
     pointer-events: none;
     z-index: 1;
+    
 }
 
 .game-header-shitok h1 {
@@ -1519,12 +1525,11 @@ footer {
     width: 100%;
     height: 400px;
     background-color: var(--darker-bg);
-    border: 1px solid var(--dark-border);
     overflow: hidden;
     margin-bottom: 20px;
-    box-shadow: inset 0 0 20px rgba(0, 0, 0, 0.5);
     position: relative;
     z-index: 2;
+    border: 2px solid var(--dark-bg);
 }
 
 .wire-end-shitok:hover {
@@ -1546,7 +1551,7 @@ footer {
 .game-controls-shitok button {
     background: #1a1a1a;
     color: var(--white);
-    border: none;
+    border: 2px solid var(--darker-bg);
     padding: 10px 20px;
     font-size: 0.9rem;
     cursor: pointer;
@@ -1635,6 +1640,7 @@ footer {
 
 #start-btn-shitok {
     background-color: #2f7d25;
+    border: 2px solid #225a1b;
     animation: infinite blink 3s;
     transition: ease-in-out .3s ;
 }
@@ -1649,7 +1655,7 @@ footer {
         scale: 1;
     }
     50% {
-        scale: 1.1;
+        scale: 1.05;
     }
     100% {
         scale: 1;
